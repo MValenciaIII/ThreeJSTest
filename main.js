@@ -6,6 +6,10 @@ import { VRButton } from 'three/examples/jsm/Addons.js';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const cameraGroup = new THREE.Group();
+
+cameraGroup.position.set( 100, 100, 400 )
+cameraGroup.add(camera);
 
 
 const renderer = new THREE.WebGLRenderer();
@@ -18,7 +22,11 @@ camera.position.set( 100, 100, 400 );
 controls.update();
 
 renderer.xr.enabled = true;
-renderer.xr.setReferenceSpaceType( 'local' );
+renderer.xr.addEventListener('sessionstart', function () {
+    scene.add(cameraGroup);
+    cameraGroup.add(camera);
+});
+
 
 
 const loader = new GLTFLoader();
@@ -50,7 +58,9 @@ function animate() {
     controls.update();
 
     renderer.setAnimationLoop( function () {
+
         renderer.render(scene, camera)
+        
     })
     
 }
